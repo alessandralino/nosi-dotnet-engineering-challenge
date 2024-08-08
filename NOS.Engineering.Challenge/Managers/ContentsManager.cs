@@ -1,5 +1,6 @@
 using NOS.Engineering.Challenge.Database;
-using NOS.Engineering.Challenge.Models;
+using NOS.Engineering.Challenge.Models; 
+
 
 namespace NOS.Engineering.Challenge.Managers;
 
@@ -36,4 +37,36 @@ public class ContentsManager : IContentsManager
     {
         return _database.Delete(id);
     }
+
+    public Task<Content?> AddGenres(Guid id, IEnumerable<string> genres)
+    {
+        var content = _database.Read(id);
+
+        if (content.Result is null)
+        {
+            return content;
+        }            
+
+        List<string> updatedGenres = [.. content.Result.GenreList ?? []];
+
+        updatedGenres.AddRange(genres);
+
+        return _database.Update(id, new ContentDto(updatedGenres.Distinct()));
+    }
+
+    public Task<Content?> RemoveGenres(Guid id, IEnumerable<string> genres)
+    {
+        var content = _database.Read(id);
+
+        if (content.Result is null)
+            return content;
+
+        List<string> updatedGenres = [.. content.Result.GenreList ?? []];
+
+        updatedGenres.RemoveAll(x => genres.Contains(x));
+
+        return _database.Update(id, new ContentDto(updatedGenres));
+    }
+
+
 }

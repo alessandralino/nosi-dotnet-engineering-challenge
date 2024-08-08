@@ -2,6 +2,11 @@ namespace NOS.Engineering.Challenge.Models;
 
 public class ContentDto
 {
+    public ContentDto(IEnumerable<string> genreList)
+    {
+        GenreList = genreList;
+    }
+
     public ContentDto(
         string? title,
         string? subTitle,
@@ -30,5 +35,5 @@ public class ContentDto
     public DateTime? StartTime { get; set; }
     public DateTime? EndTime { get; set; }
     public IEnumerable<string> GenreList { get; set; }
-    
+
 }
