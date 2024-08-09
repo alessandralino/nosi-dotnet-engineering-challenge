@@ -18,6 +18,7 @@ namespace NOS.Engineering.Challenge.API.Controllers
             _logger = logger;
         }
 
+        [Obsolete("This endpoint is deprecated. Please use GET /api/v1/Content/filter instead.")]
         [HttpGet]
         public async Task<IActionResult> GetManyContents()
         {
@@ -39,6 +40,41 @@ namespace NOS.Engineering.Challenge.API.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "An error occurred while fetching contents at {Timestamp}.", DateTime.UtcNow);
+                return StatusCode(500, "An unexpected error occurred.");
+            }
+        }
+
+        [HttpGet("filter")]
+        public async Task<IActionResult> GetFilteredContents([FromQuery] string? title, [FromQuery] string? genre)
+        {
+            _logger.LogInformation("Fetching filtered contents with Title: {Title} and Genre: {Genre} at {Timestamp}.", title, genre, DateTime.UtcNow);
+
+            try
+            {
+                var contents = await _manager.GetManyContents().ConfigureAwait(false);
+
+                if (!string.IsNullOrEmpty(title))
+                {
+                    contents = contents.Where(c => c.Title.Contains(title, StringComparison.OrdinalIgnoreCase)).ToList();
+                }
+
+                if (!string.IsNullOrEmpty(genre))
+                {
+                    contents = contents.Where(c => c.GenreList.Any(g => g.Contains(genre, StringComparison.OrdinalIgnoreCase))).ToList();
+                }
+
+                if (!contents.Any())
+                {
+                    _logger.LogWarning("No contents found matching the filters at {Timestamp}.", DateTime.UtcNow);
+                    return NotFound();
+                }
+
+                _logger.LogInformation("Fetched {Count} filtered contents at {Timestamp}.", contents.Count(), DateTime.UtcNow);
+                return Ok(contents);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while fetching filtered contents at {Timestamp}.", DateTime.UtcNow);
                 return StatusCode(500, "An unexpected error occurred.");
             }
         }
