@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.OutputCaching;
 using Microsoft.Extensions.Logging;
 using NOS.Engineering.Challenge.API.Models;
 using NOS.Engineering.Challenge.Managers;
@@ -45,6 +46,7 @@ namespace NOS.Engineering.Challenge.API.Controllers
         }
 
         [HttpGet("filter")]
+        [OutputCache(Duration = 6)]
         public async Task<IActionResult> GetFilteredContents([FromQuery] string? title, [FromQuery] string? genre)
         {
             _logger.LogInformation("Fetching filtered contents with Title: {Title} and Genre: {Genre} at {Timestamp}.", title, genre, DateTime.UtcNow);
@@ -80,6 +82,7 @@ namespace NOS.Engineering.Challenge.API.Controllers
         }
 
         [HttpGet("{id}")]
+        [OutputCache(Duration = 6)]
         public async Task<IActionResult> GetContent(Guid id)
         {
             _logger.LogInformation("Fetching content with ID {Id} at {Timestamp}.", id, DateTime.UtcNow);
@@ -105,6 +108,7 @@ namespace NOS.Engineering.Challenge.API.Controllers
         }
 
         [HttpPost]
+        [OutputCache(Duration = 6)]
         public async Task<IActionResult> CreateContent([FromBody] ContentInput content)
         {
             _logger.LogInformation("Creating new content at {Timestamp}.", DateTime.UtcNow);
@@ -130,6 +134,7 @@ namespace NOS.Engineering.Challenge.API.Controllers
         }
 
         [HttpPatch("{id}")]
+        [OutputCache(Duration = 6)]
         public async Task<IActionResult> UpdateContent(Guid id, [FromBody] ContentInput content)
         {
             _logger.LogInformation("Updating content with ID {Id} at {Timestamp}.", id, DateTime.UtcNow);
@@ -155,6 +160,7 @@ namespace NOS.Engineering.Challenge.API.Controllers
         }
 
         [HttpDelete("{id}")]
+        [OutputCache(Duration = 6)]
         public async Task<IActionResult> DeleteContent(Guid id)
         {
             _logger.LogInformation("Deleting content with ID {Id} at {Timestamp}.", id, DateTime.UtcNow);
@@ -174,6 +180,7 @@ namespace NOS.Engineering.Challenge.API.Controllers
         }
 
         [HttpPost("{id}/genre")]
+        [OutputCache(Duration = 6)]
         public async Task<IActionResult> AddGenres(Guid id, [FromBody] IEnumerable<string> genre)
         {
             _logger.LogInformation("Adding genres to content with ID {Id} at {Timestamp}.", id, DateTime.UtcNow);
@@ -199,6 +206,7 @@ namespace NOS.Engineering.Challenge.API.Controllers
         }
 
         [HttpDelete("{id}/genre")]
+        [OutputCache(Duration = 6)]
         public async Task<IActionResult> RemoveGenres(Guid id, [FromBody] IEnumerable<string> genre)
         {
             _logger.LogInformation("Removing genres from content with ID {Id} at {Timestamp}.", id, DateTime.UtcNow);

@@ -8,11 +8,13 @@ var builder = WebApplication.CreateBuilder(args)
 
 // Add dbcontext to the container 
 builder.Services.AddMySqlDatabase(builder.Configuration);
-
+builder.Services.AddOutputCache();
 var app = builder.Build();
 
 app.MapControllers();
 app.UseSwagger()
     .UseSwaggerUI();
+
+app.UseOutputCache();
     
 app.Run();
