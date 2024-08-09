@@ -5,14 +5,9 @@ using NOS.Engineering.Challenge.Database;
 var builder = WebApplication.CreateBuilder(args)
         .ConfigureWebHost()
         .RegisterServices();
-string mySqlConnection =
-              builder.Configuration.GetConnectionString("DefaultConnection");
 
-builder.Services.AddDbContextPool<AppDbContext>(options =>
-                options.UseMySql(mySqlConnection,
-                      ServerVersion.AutoDetect(mySqlConnection)));
-
-
+// Add dbcontext to the container 
+builder.Services.AddMySqlDatabase(builder.Configuration);
 
 var app = builder.Build();
 
