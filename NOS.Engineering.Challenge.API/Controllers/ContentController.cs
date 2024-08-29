@@ -53,17 +53,7 @@ namespace NOS.Engineering.Challenge.API.Controllers
 
             try
             {
-                var contents = await _manager.GetManyContents().ConfigureAwait(false);
-
-                if (!string.IsNullOrEmpty(title))
-                {
-                    contents = contents.Where(c => c.Title.Contains(title, StringComparison.OrdinalIgnoreCase)).ToList();
-                }
-
-                if (!string.IsNullOrEmpty(genre))
-                {
-                    contents = contents.Where(c => c.GenreList.Any(g => g.Contains(genre, StringComparison.OrdinalIgnoreCase))).ToList();
-                }
+                var contents = await _manager.GetFilteredContents(title, genre).ConfigureAwait(false);
 
                 if (!contents.Any())
                 {
@@ -79,6 +69,7 @@ namespace NOS.Engineering.Challenge.API.Controllers
                 _logger.LogError(ex, "An error occurred while fetching filtered contents at {Timestamp}.", DateTime.UtcNow);
                 return StatusCode(500, "An unexpected error occurred.");
             }
+
         }
 
         [HttpGet("{id}")]

@@ -26,10 +26,12 @@ namespace NOS.Engineering.Challenge.API.Tests
         public async Task GetManyContents_ReturnsNotFound_WhenContentsExist()
         {
             // Arrange
-            _mockContentManager.Setup(m => m.GetManyContents()).ReturnsAsync(new List<Content>());
+            string title = "";
+            string genre = "";
+            _mockContentManager.Setup(m => m.GetFilteredContents(title, genre)).ReturnsAsync(new List<Content>());
 
             // Act
-            var result = await _contentController.GetManyContents();
+            var result = await _contentController.GetFilteredContents(title, genre);
 
             // Assert
             result.ShouldBeEqualTo(result);
@@ -39,10 +41,12 @@ namespace NOS.Engineering.Challenge.API.Tests
         public async Task GetManyContents_ReturnsNotFound_WhenNoContentsExist()
         {
             // Arrange
-            _mockContentManager.Setup(m => m.GetManyContents()).ReturnsAsync(new List<Content>());
+            string title = "Godfather";
+            string genre = "Romance";
+            _mockContentManager.Setup(m => m.GetFilteredContents(title, genre)).ReturnsAsync(new List<Content>());
 
             // Act
-            var result = await _contentController.GetManyContents();
+            var result = await _contentController.GetFilteredContents(title, genre);
 
             // Assert
             Assert.IsType<NotFoundResult>(result);
@@ -52,10 +56,12 @@ namespace NOS.Engineering.Challenge.API.Tests
         public async Task GetManyContents_ReturnsInternalServerError_OnException()
         {
             // Arrange
-            _mockContentManager.Setup(m => m.GetManyContents()).ThrowsAsync(new Exception());
+            string title = "Godfather";
+            string genre = "Romance";
+            _mockContentManager.Setup(m => m.GetFilteredContents(title, genre)).ThrowsAsync(new Exception());
 
             // Act
-            var result = await _contentController.GetManyContents();
+            var result = await _contentController.GetFilteredContents(title, genre);
 
             // Assert
             var statusCodeResult = Assert.IsType<ObjectResult>(result);
